@@ -2,6 +2,27 @@
 
 use Illuminate\Support\Collection;
 
+if (!Collection::hasMacro('mapProc')) {
+    /*
+     * Map a string as if it was a proc.
+     */
+    Collection::macro('mapProc', function ($str) {
+        return Collection::make($this->items)->map(function ($item) use ($str){
+          return $str($item);
+        });
+    });
+}
+
+if (!Collection::hasMacro('transformProc')) {
+    /*
+     * Transform a string as if it were a proc.
+     */
+    Collection::macro('transformProc', function ($str) {
+         $this->items = $this->mapProc($callback)->all();
+         return $this;
+    });
+}
+
 if (!Collection::hasMacro('dd')) {
     /*
      * Dump the contents of the collection and terminate the script.
